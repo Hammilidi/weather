@@ -1,5 +1,5 @@
 # Desciption
-projet d'analyse des données de la météo
+Ce projet vise a effectuer une analyse des données de la météo
 
 ```
 echo "# weather" >> README.md
@@ -9,7 +9,7 @@ git commit -m "first commit"
 git branch -M data-collection
 git remote add origin https://github.com/Hammilidi/weather.git
 git push -u origin daya-collection
-git checkout data-colelction
+git checkout data-collection
 ```
 
 
@@ -19,8 +19,8 @@ worflow1:  nooa------------->             ---------->analyse du changement clima
            
            
 
-workflow2: openweather-------->          ----------->analyse demande energie electrique en fonction de la meteo--->python Dash
+workflow2: openweather-------->            ------------> analyse energie electrique/meteo--->python Dash
                               kafka--ETL(Spark)------>
-           electricitymap----->         ------------>construction d'une api
+           electricitymap----->           ------------>HDFS/construction d'une api
           
                
