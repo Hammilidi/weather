@@ -6,7 +6,7 @@ import gzip
 BASE_URL = "https://www1.ncdc.noaa.gov/pub/data/noaa"
 
 # Créez un répertoire pour stocker les fichiers téléchargés
-download_directory = "noaa_data"
+download_directory = "noaa_world_stations_data"
 os.makedirs(download_directory, exist_ok=True)
 
 # Parcourez les années de 2000 à 2023
