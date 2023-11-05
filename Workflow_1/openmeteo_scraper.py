@@ -6,8 +6,6 @@ import time
 def fetch_weather_data():
     api_url = "https://archive-api.open-meteo.com/v1/archive"
     params = {
-    "latitude": "30.9189,12.3657",
-    "longitude": "-6.8934,-1.5339",
     "start_date": "2000-01-01",
     "end_date": "2023-10-28",
     "hourly": "temperature_2m,relativehumidity_2m,dewpoint_2m,apparent_temperature,precipitation,rain,snowfall,snow_depth,weathercode,pressure_msl,surface_pressure,cloudcover,cloudcover_low,cloudcover_mid,cloudcover_high,et0_fao_evapotranspiration,vapor_pressure_deficit,windspeed_10m,windspeed_100m,winddirection_10m,winddirection_100m,windgusts_10m,soil_temperature_0_to_7cm,soil_temperature_7_to_28cm,soil_temperature_28_to_100cm,soil_temperature_100_to_255cm,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm,soil_moisture_28_to_100cm,soil_moisture_100_to_255cm,is_day,shortwave_radiation,direct_radiation,diffuse_radiation,direct_normal_irradiance,terrestrial_radiation,shortwave_radiation_instant,direct_radiation_instant,diffuse_radiation_instant,direct_normal_irradiance_instant,terrestrial_radiation_instant",
@@ -15,6 +13,7 @@ def fetch_weather_data():
     "windspeed_unit": "ms",
     "timezone": "auto"
 }
+
 
     response = requests.get(api_url, params=params)
 
@@ -41,7 +40,7 @@ def save_to_csv(data, csv_file):
 
 # Utilisez ces fonctions pour récupérer et sauvegarder les données
 if __name__ == "__main__":
-    csv_file = "weather_data.csv"
+    csv_file = "openmeteo_data.csv"
 
     # Votre clé d'API et compteur de limites
     limit_remaining = 1000
