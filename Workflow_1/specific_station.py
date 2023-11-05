@@ -11,9 +11,10 @@ BASE_URL = "https://www1.ncdc.noaa.gov/pub/data/noaa"
 
 # Année de début
 start_year = 1980
+end_year = 2024
 
 # Créez un répertoire pour stocker les fichiers téléchargés
-download_directory = "Tanger_Station_Data"
+download_directory = "Tanger_Station"
 os.makedirs(download_directory, exist_ok=True)
 
 # Obtenez le contenu HTML de la page
@@ -32,7 +33,7 @@ if response.status_code == 200:
                 file_name = file_url.get('href')
                 if file_name.endswith(".gz") and file_name.startswith(f"{usaf_station}-"):
                     file_year = int(file_name.split('-')[1])
-                    if file_year >= start_year:
+                    if file_year >= start_year and file_year<=end_year:
                         # Téléchargez le fichier
                         file_path = os.path.join(download_directory, file_name)
                         file_url = f"{station_year_url}/{file_name}"
