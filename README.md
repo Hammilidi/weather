@@ -19,7 +19,7 @@ worflow1:  nooa------------->             ---------->analyse du changement clima
            
            
 
-workflow2: openweather-------->            ------------> analyse energie electrique/meteo--->python Dash
+workflow2: openweather-------->            ------------>analyse energie electrique/meteo--->python Dash
                               kafka--ETL(Spark)------>
            electricitymap----->           ------------>HDFS/construction d'une api
           
