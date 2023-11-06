@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Chemin vers le dossier contenant les fichiers METAR
-folder_path = "noaa_data/"
+folder_path = "Tanger_Station/"
 
 # Créez une liste vide pour stocker les données
 data = []
