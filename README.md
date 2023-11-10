@@ -15,7 +15,7 @@ git checkout data-collection
 
 worflow1:  nooa------------->             ---------->analyse du changement climatique---->PowerBI
                                ETL(Talend)------>
-        open-meteo -------->            ----------->systeme de prediction et d'alerte de catastrophes meteorologiques 
+        open-meteo -------->            ----------->systeme de prediction et d'alerte de catastrophes météorologiques 
            
            
 
