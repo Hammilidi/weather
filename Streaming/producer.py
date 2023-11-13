@@ -1,5 +1,6 @@
 import requests
 import time
+from confluent_kafka import Producer
 
 # Remplacez 'YOUR_API_KEY' par votre clé API OpenWeather
 api_key = '37e333ac92209e27137831ba501a0c03'
@@ -37,6 +38,7 @@ while True:
         # Vérifiez la réponse
         if response.status_code == 200:
             data = response.json()
+            # print(data)
             # Les données météorologiques actuelles sont stockées dans 'data'
             # print(f'Données météorologiques pour {city}:')
             # print('Température (en °C):', data['main']['temp'])
