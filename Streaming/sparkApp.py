@@ -60,6 +60,9 @@ df = parsed_stream.withColumn("values", from_json(parsed_stream["value"], weathe
 # Access fields within the struct
 df = df.select("values.*")
 
+
+
+#-----------------------------------------CASSANDRA----------------------
 from cassandra.cluster import Cluster
 
 cassandra_host = 'localhost'
@@ -116,7 +119,7 @@ def create_cassandra_table(session, tableName):
             timezone INT,
             city_name TEXT,
             cod INT,
-            PRIMARY KEY (city_id, dt) 
+            PRIMARY KEY (city_id) 
         )
         """
 
@@ -134,22 +137,21 @@ if session:
     # Set the keyspace
     session.set_keyspace(keyspaceName)
 
-
-    # Save the DataFrame to Cassandra
+    create_cassandra_table(session, tableName)
+    
+    # # Save the DataFrame to Cassandra
     result_df_clean = df.filter(col("id").isNotNull())
-
-    result_df_clean.writeStream \
-        .outputMode("append") \
+    
+    # Écrire les données en continu dans Cassandra
+    streaming_query = df.writeStream \
         .format("org.apache.spark.sql.cassandra") \
+        .outputMode("append") \
         .option("checkpointLocation", "./checkpoint/data") \
         .option("keyspace", keyspaceName) \
         .option("table", tableName) \
         .start()
- 
-    # Write the streaming DataFrame to the console
-    query = df.writeStream.outputMode("append").format("console").start()
 
-    # Wait for the termination of the query
-    query.awaitTermination()
+    # Attendre la terminaison du flux
+    streaming_query.awaitTermination()
 else:
     print("Exiting due to Cassandra connection failure.")
