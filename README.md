@@ -1,5 +1,15 @@
 # Desciption
-Ce projet vise à effectuer une analyse des données de la météo
+Ce projet vise à effectuer une analyse des données de la météo. Les objectifs sont :
+- Les tendances de temperatures 
+- Analyse des tendances climatiques
+- L'influence du climat sur les sols
+- Analyse de la pollution de l'air
+- Analyse du potentiel d'energie solaire
+- Analyse des radiations solaires
+
+# Architecture du projet
+![project architecture](/media/architecture.png)
+
 
 ```
 echo "# weather" >> README.md
@@ -12,15 +22,4 @@ git push -u origin data-collection
 git checkout data-collection
 ```
 
-
-worflow1:  nooa------------->             ---------->analyse du changement climatique---->PowerBI
-                               ETL(Talend)------>
-        open-meteo -------->            ----------->systeme de prediction et d'alerte de catastrophes météorologiques 
-           
-           
-
-workflow2: openweather-------->            ------------>analyse energie electrique/meteo--->python Dash
-                              kafka--ETL(Spark)------>
-           electricitymap----->           ------------>HDFS/construction d'une api
-          
                

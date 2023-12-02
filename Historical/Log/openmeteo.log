@@ -1,0 +1,9 @@
+INFO:root:API Calls limit reached for the day.
+ERROR:root:Error: API Calls limit reached for the day.
+INFO:root:API Calls limit reached for the day.
+ERROR:root:Error: API Calls limit reached for the day.
+INFO:root:API Calls limit reached for the day.
+ERROR:root:Error: API Calls limit reached for the day.
+INFO:root:API Calls limit reached for the day.
+ERROR:root:Error: API Calls limit reached for the day.
+ERROR:root:Error: 'NoneType' object has no attribute 'DataFrame'
