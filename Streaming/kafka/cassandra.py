@@ -1,16 +1,10 @@
-from pyspark.sql.functions import from_json, col, expr
+from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
-from pyspark.sql import SparkSession
-import pyspark.sql.functions as F
-from pyspark.sql import SparkSession
-from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure, CollectionInvalid
-import threading
-
+from pyspark.sql.functions import from_json, col
 
 # Initialize Spark session
 spark = SparkSession.builder \
-    .appName("movielensApp") \
+    .appName("weatherCassandra") \
     .config("spark.streaming.stopGracefullyOnShutdown", True) \
     .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,com.datastax.spark:spark-cassandra-connector_2.12:3.2.0") \
     .getOrCreate()
@@ -60,6 +54,7 @@ weather_schema = StructType([
     StructField("cod", IntegerType(), True)
 ])
 
+
 # Parse Kafka messages and apply schema
 parsed_stream = kafkaStream.selectExpr("CAST(value AS STRING)")
 df = parsed_stream.withColumn("values", from_json(parsed_stream["value"], weather_schema))
@@ -69,8 +64,6 @@ df = df.select("values.*")
 
 # Transformations
 # Renommer la colonne sys.id en sys_id
-from pyspark.sql.functions import col, expr
-
 df = df.select(
     col("coord.lon").alias("longitude"),
     col("coord.lat").alias("latitude"),
@@ -98,18 +91,12 @@ df = df.select(
     col("cod").alias("cod")
 )
 
-# # Write the data to console
-# streaming_query = df.writeStream \
-#     .format("console") \
-#     .outputMode("append") \
-#     .option("checkpointLocation", "./checkpoint/data") \
-#     .start()
-
-# streaming_query.awaitTermination()  # Wait for the processing to finish
-
-#-----------------------------------------CASSANDRA----------------------
+# -----------------------------------------CASSANDRA----------------------
 from cassandra.cluster import Cluster
+from pyspark.sql import DataFrame
 
+
+# parametres de connexion à cassandra
 cassandra_host = 'localhost'
 cassandra_port = 9042
 keyspaceName = 'weather'
@@ -168,70 +155,40 @@ def create_cassandra_table(session, tableName):
                 PRIMARY KEY ((city_id, datetime))
             )
         """
-
         session.execute(create_table_query)
         print(f"Table {keyspaceName}.{tableName} was created successfully.")
     except Exception as e:
         print(f"Error in creating table {keyspaceName}.{tableName}: {str(e)}")
+
+def save_to_cassandra(batch_df, batch_id):
+    try:
+        batch_df.coalesce(1).write \
+            .format("org.apache.spark.sql.cassandra") \
+            .mode("append") \
+            .option("keyspace", keyspaceName) \
+            .option("table", tableName) \
+            .save()
+        print(f"Batch {batch_id} inserted into Cassandra successfully.")
+    except Exception as e:
+        print(f"Error while inserting batch {batch_id} into Cassandra: {str(e)}")
 
 # Establish Cassandra connection
 session = connect_to_cassandra(cassandra_host, cassandra_port)
 
 if session:
     create_cassandra_keyspace(session, keyspaceName)
-
-    # Set the keyspace
     session.set_keyspace(keyspaceName)
-
     create_cassandra_table(session, tableName)
-    
-    # # Save the DataFrame to Cassandra
-    result_df_clean = df.filter(col("city_id").isNotNull())
-    
-    # Écrire les données en continu dans Cassandra
-    streaming_query = result_df_clean.writeStream \
-        .format("org.apache.spark.sql.cassandra") \
-        .outputMode("append") \
-        .option("checkpointLocation", "./checkpoint/data") \
-        .option("keyspace", keyspaceName) \
-        .option("table", tableName) \
-        .start()
 
-    # Attendre la terminaison du flux
-    streaming_query.awaitTermination()
+    result_df_clean = df.filter(col("city_id").isNotNull())
+
+    # Insérer dans Cassandra
+    df.writeStream \
+        .foreachBatch(save_to_cassandra) \
+        .outputMode("append") \
+        .start() \
+        .awaitTermination()
 else:
     print("Exiting due to Cassandra connection failure.")
     
 
-
-# Définition de la fonction d'exécution en parallèle
-def process_batch(batch_df, batch_id):
-    threads = []
-
-    # Convertir le DataFrame en liste pour itérer
-    data_list = batch_df.collect()
-
-    # Nombre de threads à exécuter en parallèle
-    num_threads = 5  # Vous pouvez ajuster ce nombre selon vos besoins
-
-    # Diviser les données en sous-listes pour chaque thread
-    batch_size = len(data_list) // num_threads
-
-    for i in range(0, len(data_list), batch_size):
-        thread = threading.Thread(target=save_to_mongodb, args=(data_list[i:i + batch_size],))
-        threads.append(thread)
-
-    # Lancer les threads
-    for thread in threads:
-        thread.start()
-
-    # Attendre que tous les threads aient terminé
-    for thread in threads:
-        thread.join()
-
-# Écrivez les données dans MongoDB en utilisant la fonction process_batch
-df.writeStream \
-    .foreachBatch(process_batch) \
-    .outputMode("append") \
-    .start() \
-    .awaitTermination()
