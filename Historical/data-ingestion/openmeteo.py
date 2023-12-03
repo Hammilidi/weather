@@ -81,7 +81,7 @@ try:
             }
 
             # Création du répertoire s'il n'existe pas
-            output_directory = "/home/FIL_ROUGE/Historical/raw/openmeteo"
+            output_directory = "/home/FIL_ROUGE/Historical/data/raw/openmeteo"
             if not os.path.exists(output_directory):
                 os.makedirs(output_directory)
                 

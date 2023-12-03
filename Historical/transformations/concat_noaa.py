@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Chemin vers le dossier contenant les fichiers METAR
-folder_path = "/home/FIL_ROUGE/Historical/raw/noaa_tanger/"
+folder_path = "/home/FIL_ROUGE/Historical/data/raw/noaa_tanger/"
 
 # Créez une liste vide pour stocker les données
 data = []
@@ -61,6 +61,6 @@ df = pd.DataFrame(data, columns=[
 ])
 
 # Exportez le DataFrame en tant que fichier CSV
-df.to_csv("/home/FIL_ROUGE/Historical/processed/nooa_data.csv", index=False)
+df.to_csv("/home/FIL_ROUGE/Historical/data/processed/nooa_data.csv", index=False)
 
 print("Le fichier CSV a été exporté avec succès.")

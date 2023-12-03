@@ -60,7 +60,7 @@ try:
     print(hourly_dataframe)
 
     # Création du répertoire s'il n'existe pas
-    output_directory = "/home/FIL_ROUGE/Historical/raw/air"
+    output_directory = "/home/FIL_ROUGE/Historical/data/raw/air"
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
 

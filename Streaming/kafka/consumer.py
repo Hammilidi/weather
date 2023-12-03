@@ -1,6 +1,8 @@
 from pyspark.sql.functions import from_json, col
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
 from pyspark.sql import SparkSession
+import pyspark.sql.functions as F
+
 
 # Initialize Spark session
 spark = SparkSession.builder \
@@ -60,7 +62,45 @@ df = parsed_stream.withColumn("values", from_json(parsed_stream["value"], weathe
 # Access fields within the struct
 df = df.select("values.*")
 
+# Transformations
+# Renommer la colonne sys.id en sys_id
+from pyspark.sql.functions import col, expr
 
+df = df.select(
+    col("coord.lon").alias("longitude"),
+    col("coord.lat").alias("latitude"),
+    col("weather").alias("weather"),
+    col("base").alias("base"),
+    col("main.temp").alias("temperature"),
+    col("main.feels_like").alias("feels_like"),
+    col("main.temp_min").alias("min_temperature"),
+    col("main.temp_max").alias("max_temperature"),
+    col("main.pressure").alias("pressure"),
+    col("main.humidity").alias("humidity"),
+    col("visibility").alias("visibility"),
+    col("wind.speed").alias("wind_speed"),
+    col("wind.deg").alias("wind_degree"),
+    col("clouds.all").alias("cloudiness"),
+    col("dt").alias("datetime"),
+    col("sys.type").alias("sys_type"),
+    col("sys.id").alias("sys_id"),
+    col("sys.country").alias("country"),
+    col("sys.sunrise").alias("sunrise"),
+    col("sys.sunset").alias("sunset"),
+    col("timezone").alias("timezone"),
+    col("id").alias("city_id"),
+    col("name").alias("city_name"),
+    col("cod").alias("cod")
+)
+
+# # Write the data to console
+# streaming_query = df.writeStream \
+#     .format("console") \
+#     .outputMode("append") \
+#     .option("checkpointLocation", "./checkpoint/data") \
+#     .start()
+
+# streaming_query.awaitTermination()  # Wait for the processing to finish
 
 #-----------------------------------------CASSANDRA----------------------
 from cassandra.cluster import Cluster
@@ -95,32 +135,33 @@ def create_cassandra_keyspace(session, keyspaceName):
 def create_cassandra_table(session, tableName):
     try:
         create_table_query = f"""
-        CREATE TABLE IF NOT EXISTS {keyspaceName}.{tableName} (
-            lon FLOAT,
-            lat FLOAT,
-            weather TEXT,
-            base TEXT,
-            temp FLOAT,
-            feels_like FLOAT,
-            temp_min FLOAT,
-            temp_max FLOAT,
-            pressure INT,
-            humidity INT,
-            visibility INT,
-            wind_speed FLOAT,
-            wind_deg INT,
-            clouds INT,
-            dt INT,
-            type INT,
-            city_id INT,
-            country TEXT,
-            sunrise INT,
-            sunset INT,
-            timezone INT,
-            city_name TEXT,
-            cod INT,
-            PRIMARY KEY (city_id) 
-        )
+            CREATE TABLE IF NOT EXISTS {keyspaceName}.{tableName} (
+                longitude FLOAT,
+                latitude FLOAT,
+                weather TEXT,
+                base TEXT,
+                temperature FLOAT,
+                feels_like FLOAT,
+                min_temperature FLOAT,
+                max_temperature FLOAT,
+                pressure INT,
+                humidity INT,
+                visibility INT,
+                wind_speed FLOAT,
+                wind_degree INT,
+                cloudiness INT,
+                datetime INT,
+                sys_type INT,
+                sys_id INT,
+                country TEXT,
+                sunrise INT,
+                sunset INT,
+                timezone INT,
+                city_id INT,
+                city_name TEXT,
+                cod INT,
+                PRIMARY KEY ((city_id, datetime))
+            )
         """
 
         session.execute(create_table_query)
@@ -140,10 +181,10 @@ if session:
     create_cassandra_table(session, tableName)
     
     # # Save the DataFrame to Cassandra
-    result_df_clean = df.filter(col("id").isNotNull())
+    result_df_clean = df.filter(col("city_id").isNotNull())
     
     # Écrire les données en continu dans Cassandra
-    streaming_query = df.writeStream \
+    streaming_query = result_df_clean.writeStream \
         .format("org.apache.spark.sql.cassandra") \
         .outputMode("append") \
         .option("checkpointLocation", "./checkpoint/data") \

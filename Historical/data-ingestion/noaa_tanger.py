@@ -18,7 +18,7 @@ start_year = 1980
 end_year = 2024
 
 # Créez un répertoire pour stocker les fichiers téléchargés
-download_directory = "/home/FIL_ROUGE/Historical/raw/noaa_tanger"
+download_directory = "/home/FIL_ROUGE/Historical/data/raw/noaa_tanger"
 os.makedirs(download_directory, exist_ok=True)
 
 try:
