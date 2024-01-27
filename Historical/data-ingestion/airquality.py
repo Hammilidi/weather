@@ -18,12 +18,12 @@ try:
     # L'ordre des variables dans les données horaires est important pour les attribuer correctement ci-dessous
     url = "https://air-quality-api.open-meteo.com/v1/air-quality"
     params = {
-        "latitude": 34.9559,
+        "latitude": 35.7721,
         "longitude": -5.4437,
         "hourly": ["pm10", "pm2_5", "carbon_monoxide", "nitrogen_dioxide", "sulphur_dioxide", "ozone"],
         "timezone": "auto",
         "start_date": "2022-07-29",
-        "end_date": "2023-11-05"
+        "end_date": "2024-01-15"
     }
     responses = openmeteo.weather_api(url, params=params)
 

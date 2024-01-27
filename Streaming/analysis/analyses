@@ -1,0 +1,26 @@
+Avec les données stockées dans Cassandra à partir du consumer Spark, voici quelques analyses que nous pouvons effectuer :
+
+1. Analyse de la tendance météorologique par ville : 
+        - Utiliser un graphe lineaire pour suivre l'evolution de la température, la pression, l'humidité, de la vitesse du vent
+            pour analyser comment ces paramètres varient dans différentes villes au fil du temps. 
+        - Utiliser un graphe lineaire pour explorer s'il y a une corrélation entre les conditions météorologiques (température, vent, humidité.) 
+            et la consommation d'électricité dans différentes les differentes villes.
+        - Identifier les heures de pointe de consommation d'électricité et examiner si elles sont corrélées à des 
+            conditions météorologiques spécifiques.
+        - Identifier les saisons ou les périodes de l'année où la consommation d'électricité est la plus élevée 
+            ou la plus basse en fonction des données météorologiques.
+
+2. Analyse des Segments de consommateurs : 
+        - Analyse comparative des segments de consommateurs en fonction de leur nombre et de leur consommation moyenne 
+
+3. Comparaison météo entre zones : 
+        - Comparer les conditions météorologiques et la consommation d'électricité entre différentes zones géographiques 
+            pour déceler des tendances ou des différences notables.
+
+4. Analyse des sources de production :
+        - Comparer la somme des sources d'energie produite par chaque source de production
+
+5. Visualisations interactives : 
+        Créer des tableaux de bord interactifs pour permettre une exploration approfondie des données, avec des filtres 
+        pour les utilisateurs afin d'observer les tendances spécifiques à leurs intérêts. (Villes, Segments de consommateur)
+
