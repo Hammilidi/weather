@@ -1,10 +1,10 @@
 # Desciption
 Ce projet vise à effectuer une analyse des données de la météo. Les objectifs sont les suivants:
 * Identifier et analyser les tendances climatiques 
-* L'influence du climat sur les sols et l'agriculture
+* L'influence du climat sur la qualite des sols et de l'air
 * Analyser la pollution/qualité de l'air
-* Analyser le potentiel d'energie solaire
-* Implementer un système de prédiction des précipitation avec un système d'alerte de catastrophes climatiques (inondation, secheresse)
+* Detecter les villes a haut potentiel d'energie verte
+* Implementer un système de prédiction des précipitations (pluies) avec un système d'alerte de catastrophes climatiques (inondation, secheresse)
 
 # Architecture du projet
 ![project architecture](/media/architecture.png)
@@ -19,7 +19,7 @@ Pour réaliser ou executer ce projet, voilà le stack de technologies utilisées
 * Microsoft SQL Server 
 * tSQLt 
 * pytest
-* MongoDB 
+* SQL Server 
 * PowerBI
 * scikit-learn 
 * Streamlit 
